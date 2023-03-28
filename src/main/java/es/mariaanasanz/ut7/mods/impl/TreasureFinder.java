@@ -11,10 +11,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
+@Mod(DamMod.MOD_ID)
 public class TreasureFinder extends DamMod implements IBlockBreakEvent, IServerStartEvent,
         IItemPickupEvent, ILivingDamageEvent, IUseItemEvent, IFishedEvent,
-        IInteractEvent, IMovementEvent{
+        IInteractEvent, IMovementEvent {
 
     public TreasureFinder() {
         super();
@@ -53,6 +57,12 @@ public class TreasureFinder extends DamMod implements IBlockBreakEvent, IServerS
     @Override
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
+        System.out.println(event.getEntity().toString());
+        System.out.println(event.getSource().toString());
+        System.out.println(Objects.requireNonNull(event.getPhase()).toString());
+        System.out.println(event.getListenerList().toString());
+        System.out.println();
+        System.out.println("evento LivingDamageEvent invocado "+event.getEntity().getClass()+" provocado por "+event.getSource().getEntity());
 
     }
 
