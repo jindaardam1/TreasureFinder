@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -26,6 +26,8 @@ import java.util.Random;
 @Mod(DamMod.MOD_ID)
 public class ExampleMod extends DamMod implements ILivingDamageEvent {
 
+    public final int NIVEL_MAXIMO_RELEVANTE = 27;
+
     public ExampleMod(){
         super();
     }
@@ -34,6 +36,7 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
     public String autor() {
         return "Jagoba Inda Arizaleta";
     }
+
 
     @Override
     @SubscribeEvent
@@ -44,42 +47,82 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
     @Override
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
-        Level world = event.getEntity().getLevel(); // El mundo en el que se está jugando
-        Player jugador = (Player) event.getSource().getEntity(); // El jugador que está causando el evento de muerte de mob
-        ItemStack jugadorMataCon = jugador.getMainHandItem(); // El objeto con el que el jugador ha matado al mob
-        int nivelJugador = jugador.experienceLevel; // El nivel del jugador
-        long momentoDelTia = world.getDayTime(); // Momento del día en el que ocurre el event
-        Vec3 posicionMuerte = event.getEntity().position(); // Posición del muerte del mob
-        BlockPos blockpos = new BlockPos(posicionMuerte.x, posicionMuerte.y, posicionMuerte.z); // Conversión de la posición del muerte del mob a BlockPos
-        BlockState state = Blocks.CHEST.defaultBlockState();
-        LivingEntity mobMuerto = event.getEntity();
-        if ((mobMuerto instanceof Skeleton) && (momentoDelTia < 12000) &&
-                ((jugadorMataCon.getItem() instanceof SwordItem) || (jugadorMataCon.getItem() instanceof AxeItem))) {
-            int calidadArma = calcularCalidadArma(jugadorMataCon.getItem());
-            world.setBlock(blockpos, state, 1);
-            ChestBlockEntity chest = (ChestBlockEntity) world.getBlockEntity(blockpos);
-            Random random = new Random(); // Crear un objeto Random para generar números aleatorios
-            int numItems = Math.min(nivelJugador, 27); // Limitar la cantidad de objetos al nivel del jugador o a 27, lo que sea menor
-            ItemStack item = new ItemStack(Items.DIAMOND); // Obtener un objeto aleatorio utilizando el método calcularItem()
-            item.setCount(3);
-            chest.setItem(1, item); // Colocar el objeto en una posición aleatoria dentro del cofre
-            for(int i = 0; i < numItems; i++) {
-
+        if (event.getSource().getEntity() != null) {
+            Random random = new Random();
+            Level world = event.getEntity().getLevel(); // El mundo en el que se está jugando
+            Player jugador = (Player) event.getSource().getEntity(); // El jugador que está causando el evento de muerte de mob
+            ItemStack jugadorMataCon = jugador.getMainHandItem(); // El objeto con el que el jugador ha matado al mob
+            int nivelJugador = jugador.experienceLevel; // El nivel del jugador
+            if (nivelJugador > NIVEL_MAXIMO_RELEVANTE) {
+                nivelJugador = NIVEL_MAXIMO_RELEVANTE;
+            }
+            long momentoDelTia = world.getDayTime(); // Momento del día en el que ocurre el event
+            Vec3 posicionMuerte = event.getEntity().position(); // Posición del muerte del mob
+            BlockPos blockpos = new BlockPos(posicionMuerte.x, posicionMuerte.y, posicionMuerte.z); // Conversión de la posición del muerte del mob a BlockPos
+            BlockState state = calcularTipoDeCofre(random.nextInt(20) + 1, random.nextInt(12) + 1);
+            LivingEntity mobMuerto = event.getEntity();
+            if ((mobMuerto instanceof Skeleton) && (momentoDelTia < 12000) &&
+                    ((jugadorMataCon.getItem() instanceof SwordItem) || (jugadorMataCon.getItem() instanceof AxeItem))) {
+                world.setBlock(blockpos, state, 1);
+                BlockEntity chest = world.getBlockEntity(blockpos);
+                for (int i = 0; i < nivelJugador - 1; i++) { // Bucle que llama al método
+                    if (random.nextBoolean()) {
+                        crearEntity(chest, jugadorMataCon, i);
+                    }
+                }
+                System.out.println("Cofre creado!");
             }
         }
-
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-        System.out.println("*".repeat(50));
-        jugadorMataCon.getItem().equals(Items.DIAMOND_AXE);
     }
 
+    public BlockState calcularTipoDeCofre(int rollCofre, int rollShulker) {
+        return switch (rollCofre) {
+            case 1 -> Blocks.ENDER_CHEST.defaultBlockState();
+            case 2, 3, 4 -> calcularTipoShulker(rollShulker);
+            case 5, 6, 7 -> Blocks.BARREL.defaultBlockState();
+            default -> Blocks.CHEST.defaultBlockState();
+        };
+    }
+
+    public BlockState calcularTipoShulker(int rollShulker) {
+        return switch (rollShulker) {
+            case 1 -> Blocks.SHULKER_BOX.defaultBlockState();
+            case 2 -> Blocks.WHITE_SHULKER_BOX.defaultBlockState();
+            case 3 -> Blocks.LIGHT_GRAY_SHULKER_BOX.defaultBlockState();
+            case 4 -> Blocks.GRAY_SHULKER_BOX.defaultBlockState();
+            case 5 -> Blocks.BLACK_SHULKER_BOX.defaultBlockState();
+            case 6 -> Blocks.BROWN_SHULKER_BOX.defaultBlockState();
+            case 7 -> Blocks.RED_SHULKER_BOX.defaultBlockState();
+            case 8 -> Blocks.ORANGE_SHULKER_BOX.defaultBlockState();
+            case 9 -> Blocks.YELLOW_SHULKER_BOX.defaultBlockState();
+            case 10 -> Blocks.LIME_SHULKER_BOX.defaultBlockState();
+            case 11 -> Blocks.GREEN_SHULKER_BOX.defaultBlockState();
+            case 12 -> Blocks.CYAN_SHULKER_BOX.defaultBlockState();
+            case 13 -> Blocks.LIGHT_BLUE_SHULKER_BOX.defaultBlockState();
+            case 14 -> Blocks.BLUE_SHULKER_BOX.defaultBlockState();
+            case 15 -> Blocks.PURPLE_SHULKER_BOX.defaultBlockState();
+            case 16 -> Blocks.MAGENTA_SHULKER_BOX.defaultBlockState();
+            default -> Blocks.PINK_SHULKER_BOX.defaultBlockState();
+        };
+    }
+
+    public void crearEntity(BlockEntity entity, ItemStack jugadorMataCon, int iteracion) {
+        Random random = new Random();
+        if (entity instanceof ChestBlockEntity chest) {
+            ItemStack item = new ItemStack(calcularItem());
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            chest.setItem(iteracion, item);
+        } else if (entity instanceof ShulkerBoxBlockEntity chest) {
+            ItemStack item = new ItemStack(calcularItem());
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            chest.setItem(iteracion, item);
+        } else if (entity instanceof BarrelBlockEntity chest) {
+            ItemStack item = new ItemStack(calcularItem());
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            chest.setItem(iteracion, item);
+        }   // No hace falta crearlo para el EnderChest porque no se le pueden settear items.
+            // Para el EnderChest solo aparece el EnderChest ya que dentro tendrá lo que tu hayas metido antes.
+    }
 
     public int calcularCalidadArma(Item arma) {
         if (arma.equals(Items.WOODEN_AXE) || arma.equals(Items.WOODEN_SWORD)) {
@@ -99,8 +142,6 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
     }
 
     public Item calcularItem() {
-        Item item = null;
-
         // Arays con los objetos que pueden tocar y sus rarezas
         Item[] arrayExtremadamenteRaros = {Items.ELYTRA, Items.TRIDENT};
 

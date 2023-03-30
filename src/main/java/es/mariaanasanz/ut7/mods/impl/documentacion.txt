@@ -1,0 +1,295 @@
+Clase: ExampleMod
+
+Descripción:
+La clase ExampleMod es una clase que extiende de la clase DamMod e implementa la interfaz
+ILivingDamageEvent. Esta clase puede ser utilizada como base para la creación de mods en
+Minecraft.
+
+Comportamiento:
+
+	- Paso 1: La clase ExampleMod extiende la funcionalidad de la clase DamMod, lo que le permite
+	tener acceso a todas las funcionalidades que ésta ofrece.
+
+	- Paso 2: Además, la clase ExampleMod implementa la interfaz ILivingDamageEvent, lo que
+	significa que debe proporcionar una implementación del método onLivingDamageEvent. Este
+	método se llamará cada vez que un jugador o criatura reciba daño y permitirá al mod 
+	realizar acciones en respuesta a dicho evento.
+
+	- Paso 3: En general, la clase ExampleMod puede ser utilizada como base para la creación
+	de mods que necesiten acceder a la funcionalidad de DamMod y manejar eventos relacionados
+	con el daño infligido a los jugadores o criaturas en el juego.
+
+---------------------------------------------------------------------------------------------------
+
+Variable: NIVEL_MAXIMO_RELEVANTE
+
+Descripción:
+La constante NIVEL_MAXIMO_RELEVANTE representa el nivel máximo de relevancia para la generación
+aleatoria de objetos en un cofre.
+
+Valor de retorno:
+
+	- La constante NIVEL_MAXIMO_RELEVANTE es un valor entero que representa el nivel máximo de
+	relevancia para la generación aleatoria de objetos en un cofre.
+
+Comportamiento:
+	- Esta constante se utiliza para limitar la cantidad de objetos generados aleatoriamente en un
+	cofre en función del nivel de juego del jugador. El nivel máximo de relevancia es 27, lo que
+	significa que si el jugador tiene un nivel de juego superior a 27, la generación aleatoria de
+	objetos en un cofre no se verá afectada por el nivel del jugador y se generará la cantidad
+	máxima posible de objetos.
+
+---------------------------------------------------------------------------------------------------
+
+Método: ExampleMod()
+
+Descripción:
+Este es el constructor de la clase ExampleMod. Es llamado cuando se crea una instancia de la clase
+ExampleMod y se utiliza para inicializar cualquier variable o estado necesario en la clase.
+
+Parámetros:
+
+	- No tiene parámetros.
+
+Valor de retorno:
+
+	- No devuelve nada.
+
+Comportamiento:
+
+	- Paso 1: Llama al constructor de la superclase DamMod().
+
+---------------------------------------------------------------------------------------------------
+
+Método: autor()
+
+Descripción:
+Este método devuelve el nombre del autor del mod de Minecraft.
+
+Parámetros:
+
+	-Este método no recibe ningún parámetro.
+
+Valor de retorno:
+
+	- Este método devuelve una cadena de caracteres que representa el nombre del autor del mod.
+
+Comportamiento:
+
+	- Paso 1: El método devuelve el valor de tipo String que representa el nombre del autor del
+	mod.
+
+---------------------------------------------------------------------------------------------------
+
+Método: onLivingDamage(LivingDamageEvent event)
+
+Descripción:
+Este método se activa cuando un ser vivo recibe daño.
+
+Parámetros:
+
+	- "event": objeto de tipo LivingDamageEvent que contiene información sobre el evento de daño.
+
+Valor de retorno:
+
+	- Este método no devuelve ningún valor.
+
+Comportamiento:
+
+	- Paso 1: Imprime un mensaje en la consola indicando que se ha activado el evento
+	LivingDamageEvent y qué entidad lo ha provocado.
+
+---------------------------------------------------------------------------------------------------
+
+Método: onLivingDeath(LivingDeathEvent event)
+
+Descripción:
+Este método es un evento que se activa cuando un mob muere. Se encarga de crear un cofre en la
+posición de muerte del mob y llenarlo con objetos aleatorios dependiendo de ciertas condiciones.
+
+Parámetros:
+
+	- "event": objeto de tipo LivingDeathEvent que contiene información del evento de muerte del
+	mob.
+
+Valor de retorno:
+
+	- Este método no devuelve ningún valor.
+
+Comportamiento:
+
+	- Paso 1: Comprueba si la fuente del evento de muerte es un jugador. Si no lo es, el método
+	termina.
+
+	- Paso 2: Obtiene información del mundo en el que se está jugando, el jugador que ha causado
+	la muerte del mob, el objeto que ha usado para matarlo, el nivel del jugador, el momento del
+	día en que ha ocurrido el evento de muerte del mob, la posición de muerte del mob y su tipo.
+
+	- Paso 3: Comprueba si se cumplen ciertas condiciones (el jugador tiene un nivel determinado y
+	ha matado al mob con una espada o hacha) para crear un cofre en la posición de muerte del mob
+	y llenarlo con objetos aleatorios.
+
+	- Paso 4: Si se cumplen las condiciones, crea el cofre, genera objetos aleatorios en su
+	interior y lo muestra en la consola con un mensaje indicando que se ha creado el cofre.
+
+	- Paso 5: El método termina.
+
+---------------------------------------------------------------------------------------------------
+
+Método: calcularTipoDeCofre(int rollCofre, int rollShulker)
+
+Descripción:
+Este método recibe dos números enteros, uno para determinar el tipo de cofre a generar y otro para
+determinar el tipo de shulker a generar. El método devuelve un objeto de tipo BlockState que
+representa el tipo de cofre generado.
+
+Parámetros:
+
+	- "rollCofre": un entero que representa el tipo de cofre a generar.
+
+	- "rollShulker": un entero que representa el tipo de shulker a generar.
+
+Valor de retorno:
+
+	- Un objeto de tipo BlockState que representa el tipo de cofre generado.
+
+Comportamiento:
+
+	- Paso 1: Se verifica el valor de "rollCofre" usando una estructura switch.
+
+	- Paso 2: Si "rollCofre" es igual a 1, se devuelve el estado del bloque de cofre de ender.
+
+	- Paso 3: Si "rollCofre" es igual a 2, 3 o 4, se llama al método "calcularTipoShulker" para
+	determinar el tipo de shulker a generar y se devuelve el resultado.
+
+	- Paso 4: Si "rollCofre" es igual a 5, 6 o 7, se devuelve el estado del bloque de barril.
+
+	- Paso 5: Si "rollCofre" no es igual a ningún valor anterior, se devuelve el estado del bloque
+	de cofre.
+
+---------------------------------------------------------------------------------------------------
+
+Método: calcularTipoShulker(int rollShulker)
+
+Descripción:
+Este método recibe como entrada un número entero "rollShulker" que representa el resultado de un
+dado. Según el número recibido, el método devuelve un objeto BlockState que representa el tipo de
+shulker box que se generará en el juego.
+
+Parámetros:
+
+	- "rollShulker": un número entero que representa el resultado del lanzamiento de un dado.
+
+Valor de retorno:
+
+	- Un objeto BlockState que representa el tipo de shulker box que se generará en el juego.
+
+Comportamiento:
+
+	- Paso 1: El método utiliza la sintaxis de switch para determinar qué tipo de shulker box se
+	generará según el resultado del lanzamiento del dado.
+
+	- Paso 2: Para cada caso, se devuelve el objeto BlockState correspondiente a cada tipo de
+	shulker box.
+
+	- Paso 3: Si el valor de "rollShulker" no coincide con ninguno de los casos, se devuelve una
+	shulker box rosa predeterminada.
+
+---------------------------------------------------------------------------------------------------
+
+Método: crearEntity(BlockEntity entity, ItemStack jugadorMataCon, int iteracion)
+
+Descripción:
+Este método se encarga de crear una entidad dentro del juego, ya sea una caja de cofre, una caja
+de shulker o un barril. Además, asigna un objeto ItemStack a dicha entidad, el cual se generará de
+manera aleatoria con la ayuda de los métodos "calcularItem()" y "calcularCalidadArma()".
+
+Parámetros:
+
+	- "entity": un objeto de tipo BlockEntity, que puede ser una caja de cofre, una caja de
+	shulker o un barril.
+
+	- "jugadorMataCon": un objeto de tipo ItemStack, que representa el arma que usó el jugador
+	para matar a la entidad.
+
+	- "iteracion": un entero que representa el índice del slot en el cual se asignará el objeto
+	ItemStack a la entidad.
+
+Valor de retorno:
+
+	Este método no devuelve ningún valor.
+
+Comportamiento:
+
+	El método "crearEntity" realiza las siguientes acciones:
+
+	- Paso 1: Se crea un objeto de tipo Random para poder generar valores aleatorios.
+
+	- Paso 2: Se verifica el tipo de entidad que se ha pasado como parámetro y se asigna un objeto
+	ItemStack a dicha entidad. Para ello, se utiliza el método "calcularItem()" para generar un
+	objeto ItemStack aleatorio y se utiliza el método "calcularCalidadArma()" para obtener la
+	calidad del arma que se usó para matar a la entidad y así determinar la cantidad de objetos
+	que se asignarán al ItemStack.
+
+	- Paso 3: Se asigna el objeto ItemStack a la entidad en el slot correspondiente al valor de
+	"iteracion". Si la entidad es un EnderChest, este paso se omite ya que no se pueden settear
+	items a dicha entidad.
+
+---------------------------------------------------------------------------------------------------
+
+Método: calcularCalidadArma()
+
+Descripción:
+Este método toma un objeto "Item" como parámetro y devuelve un valor entero que representa la
+calidad del arma que se está pasando. La calidad se basa en el material del arma. Si el objeto
+"Item" pasado como parámetro no es una de las armas predefinidas, el método devuelve -1.
+
+Parámetros:
+
+	- "arma": un objeto "Item" que representa el arma cuya calidad se va a calcular.
+
+Valor de retorno:
+
+	- Un entero que representa la calidad del arma. Si el arma pasada como parámetro no es una de
+	las armas predefinidas, el valor de retorno será -1.
+
+Comportamiento:
+
+	- El método primero verifica si el objeto "Item" pasado como parámetro es una de las armas
+	predefinidas de madera, piedra, hierro, oro, diamante o netherita.
+
+	- Si el objeto "Item" pasado como parámetro coincide con una de las armas predefinidas, el
+	método devuelve un valor entero correspondiente a la calidad del arma.
+
+	- Si el objeto "Item" pasado como parámetro no coincide con ninguna de las armas
+	predefinidas, el método devuelve -1.
+
+---------------------------------------------------------------------------------------------------
+
+Método: calcularItem()
+
+Descripción:
+Este método calcula un objeto (Item) aleatorio de acuerdo a su rareza. Las rarezas se dividen en
+extremadamente raro, muy raro, raro, normal y común.
+
+Parámetros:
+	- Este método no recibe parámetros.
+
+Valor de retorno:
+	- El método devuelve un objeto (Item) aleatorio de acuerdo a su rareza.
+
+Comportamiento:
+
+	- Paso 1: El método crea cuatro arreglos de objetos (Item) con diferentes rarezas:
+	"arrayExtremadamenteRaros", "arrayMuyRaros", "arrayRaros" y "arrayNormales". Además, se crea
+	un quinto arreglo "arrayComunes" con los objetos de menor rareza.
+
+	- Paso 2: Se genera un número aleatorio de 1 a 1,000,000 usando la clase Random.
+
+	- Paso 3: Si el número generado es igual a 1, el método devuelve un objeto (Item) aleatorio
+	de "arrayExtremadamenteRaros". Si no, se comprueba si el número está en el rango de 2 a 11,
+	en cuyo caso el método devuelve un objeto (Item) aleatorio de "arrayMuyRaros". Si el número
+	está en el rango de 12 a 1,111, el método devuelve un objeto (Item) aleatorio de "arrayRaros".
+	Si el número está en el rango de 1,112 a 111,111, el método devuelve un objeto (Item)
+	aleatorio de "arrayNormales". Si el número está en el rango de 111,112 a 1,000,000, el método
+	devuelve un objeto (Item) aleatorio de "arrayComunes".
