@@ -57,8 +57,8 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
                 nivelJugador = NIVEL_MAXIMO_RELEVANTE;
             }
             long momentoDelTia = world.getDayTime(); // Momento del día en el que ocurre el event
-            Vec3 posicionMuerte = event.getEntity().position(); // Posición del muerte del mob
-            BlockPos blockpos = new BlockPos(posicionMuerte.x, posicionMuerte.y, posicionMuerte.z); // Conversión de la posición del muerte del mob a BlockPos
+            Vec3 posicionMuerte = event.getEntity().position(); // Posición de muerte del mob
+            BlockPos blockpos = new BlockPos(posicionMuerte.x, posicionMuerte.y, posicionMuerte.z); // Conversión de la posición de muerte del mob a BlockPos
             BlockState state = calcularTipoDeCofre(random.nextInt(20) + 1, random.nextInt(12) + 1);
             LivingEntity mobMuerto = event.getEntity();
             if ((mobMuerto instanceof Skeleton) && (momentoDelTia < 12000) &&
@@ -66,9 +66,7 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
                 world.setBlock(blockpos, state, 1);
                 BlockEntity chest = world.getBlockEntity(blockpos);
                 for (int i = 0; i < nivelJugador - 1; i++) { // Bucle que llama al método
-                    if (random.nextBoolean()) {
-                        crearEntity(chest, jugadorMataCon, i);
-                    }
+                    crearEntity(chest, jugadorMataCon, i);
                 }
                 System.out.println("Cofre creado!");
             }
@@ -121,7 +119,7 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
             item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
             chest.setItem(iteracion, item);
         }   // No hace falta crearlo para el EnderChest porque no se le pueden settear items.
-            // Para el EnderChest solo aparece el EnderChest ya que dentro tendrá lo que tu hayas metido antes.
+            // Para el EnderChest solo aparece el EnderChest ya que dentro tendrá lo que tú hayas metido antes.
     }
 
     public int calcularCalidadArma(Item arma) {
