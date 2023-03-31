@@ -33,6 +33,7 @@ Valor de retorno:
 	relevancia para la generación aleatoria de objetos en un cofre.
 
 Comportamiento:
+
 	- Esta constante se utiliza para limitar la cantidad de objetos generados aleatoriamente en un
 	cofre en función del nivel de juego del jugador. El nivel máximo de relevancia es 27, lo que
 	significa que si el jugador tiene un nivel de juego superior a 27, la generación aleatoria de
