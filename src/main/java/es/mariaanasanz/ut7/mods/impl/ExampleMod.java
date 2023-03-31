@@ -1,6 +1,7 @@
 package es.mariaanasanz.ut7.mods.impl;
 
 import es.mariaanasanz.ut7.mods.base.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Skeleton;
@@ -63,13 +64,26 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
             LivingEntity mobMuerto = event.getEntity();
             if ((mobMuerto instanceof Skeleton) && (momentoDelTia < 12000) &&
                     ((jugadorMataCon.getItem() instanceof SwordItem) || (jugadorMataCon.getItem() instanceof AxeItem))) {
-                world.setBlock(blockpos, state, 1);
+                world.setBlock(blockpos, state, 512);
+                assert Minecraft.getInstance().level != null;
+                Minecraft.getInstance().level.setBlock(blockpos, state, 512);
+                world.setBlock(blockpos.above(), Blocks.DIRT.defaultBlockState(), 512);
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                world.removeBlock(blockpos.above(), true);
                 BlockEntity chest = world.getBlockEntity(blockpos);
-                for (int i = 0; i < nivelJugador - 1; i++) { // Bucle que llama al método
+                for (int i = 0; i < nivelJugador; i++) { // Bucle que llama al método
                     crearEntity(chest, jugadorMataCon, i);
                 }
                 System.out.println("Cofre creado!");
             }
+            assert Minecraft.getInstance().level != null;
+            Minecraft.getInstance().level.setBlock(blockpos.above(), Blocks.DIRT.defaultBlockState(), 512);
+            world.setBlock(blockpos.above(), Blocks.DIRT.defaultBlockState(), 512);
+            world.removeBlock(blockpos.above(), true);
         }
     }
 
@@ -108,15 +122,15 @@ public class ExampleMod extends DamMod implements ILivingDamageEvent {
         Random random = new Random();
         if (entity instanceof ChestBlockEntity chest) {
             ItemStack item = new ItemStack(calcularItem());
-            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())) + 1);
             chest.setItem(iteracion, item);
         } else if (entity instanceof ShulkerBoxBlockEntity chest) {
             ItemStack item = new ItemStack(calcularItem());
-            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())) + 1);
             chest.setItem(iteracion, item);
         } else if (entity instanceof BarrelBlockEntity chest) {
             ItemStack item = new ItemStack(calcularItem());
-            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())));
+            item.setCount(random.nextInt(calcularCalidadArma(jugadorMataCon.getItem())) + 1);
             chest.setItem(iteracion, item);
         }   // No hace falta crearlo para el EnderChest porque no se le pueden settear items.
             // Para el EnderChest solo aparece el EnderChest ya que dentro tendrá lo que tú hayas metido antes.
